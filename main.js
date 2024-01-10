@@ -56,7 +56,7 @@ const options = {
 	definition: {
 		openapi: '3.0.0',
 		info: {
-			title: 'Prison Visitor Management System',
+			title: 'Prison Visitor Management System Group-13',
 			version: '1.0.0',
 		},
 		components:{
@@ -83,6 +83,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  * /login/user:
  *   post:
  *     description: User Login
+ *     tags:
+ *     - Authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -128,6 +130,8 @@ app.post('/login/user', async (req, res) => {
  * /login/visitor:
  *   post:
  *     description: Visitor Login
+ *     tags:
+ *     - Authentication
  *     requestBody:
  *       required: true
  *       content:
@@ -171,6 +175,8 @@ app.post('/login/visitor', async (req, res) => {
  * /register/user:
  *   post:
  *     description: User Registration
+ *     tags:
+ *     - Registration
  *     requestBody:
  *       required: true
  *       content:
@@ -211,6 +217,8 @@ app.post('/register/user', async (req, res) => {
  * /register/visitor:
  *   post:
  *     description: Visitor Registration
+ *     tags:
+ *     - Registration
  *     requestBody:
  *       required: true
  *       content:
@@ -257,6 +265,8 @@ app.use(verifyToken);
  *     security:
  *      - jwt: []
  *     description: Create Visitorlog
+ *     tags:
+ *     - Registration
  *     requestBody:
  *       required: true
  *       content:
@@ -308,6 +318,8 @@ app.use(verifyToken);
  *     security:
  *      - jwt: []
  *     description: Inmate Registration
+ *     tags:
+ *     - Registration 
  *     requestBody:
  *       required: true
  *       content:
@@ -355,6 +367,8 @@ app.use(verifyToken);
  *     security:
  *      - jwt: []
  *     description: User Update
+ *     tags:
+ *     - Modification
  *     requestBody:
  *       required: true
  *       content:
@@ -399,6 +413,8 @@ app.patch('/user/update', async (req, res) => {
  *     security:
  *      - jwt: []
  *     description: Visitor Update
+ *     tags:
+ *     - Modification
  *     requestBody:
  *       required: true
  *       content:
@@ -446,6 +462,8 @@ app.patch('/visitor/update', async (req, res) => {
  *     security:
  *      - jwt: []
  *     description: Inmate Update
+ *     tags:
+ *     - Modification
  *     requestBody:
  *       required: true
  *       content:
@@ -490,6 +508,8 @@ app.patch('/visitor/update', async (req, res) => {
  *     security:
  *      - jwt: []
  *     description: Visitorlog Update
+ *     tags:
+ *     - Modification
  *     requestBody:
  *       required: true
  *       content:
@@ -538,6 +558,8 @@ app.patch('/visitor/update', async (req, res) => {
  *     security:
  *      - jwt: []
  *     description: Delete User
+ *     tags:
+ *     - Remove(delete)
  *     requestBody:
  *       required: true
  *       content:
@@ -572,6 +594,8 @@ app.delete('/delete/user', async (req, res) => {
  *     security:
  *      - jwt: []
  *     description: Delete Visitor
+ *     tags:
+ *     - Remove(delete)
  *     requestBody:
  *       required: true
  *       content:
@@ -606,6 +630,8 @@ app.delete('/delete/visitor', async (req, res) => {
  *     security:
  *      - jwt: []
  *     description: Delete Inmate
+ *     tags:
+ *     - Remove(delete)
  *     requestBody:
  *       required: true
  *       content:
@@ -640,6 +666,8 @@ app.delete('/delete/visitor', async (req, res) => {
  *     security:
  *      - jwt: []
  *     description: Delete Visitorlog
+ *     tags:
+ *     - Remove(delete)
  *     requestBody:
  *       required: true
  *       content:
