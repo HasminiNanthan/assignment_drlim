@@ -83,7 +83,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  * @swagger
  * /login/user:
  *   post:
- *   summary : User / Security Login
+ *     summary : User and Security Login
  *     description: User Login
  *     tags:
  *     - Login
