@@ -1,5 +1,5 @@
 const MongoClient = require("mongodb").MongoClient;
-const User = require("./user");
+const User = require("./user.js");
 const Visitor = require("./visitor.js");
 const Inmate = require("./inmate");
 const Visitorlog = require("./visitorlog")
@@ -52,6 +52,7 @@ app.use(express.urlencoded({ extended: false }))
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
+const { Admin } = require("mongodb");
 const options = {
 	definition: {
 		openapi: '3.0.0',
@@ -82,9 +83,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  * @swagger
  * /login/user:
  *   post:
+ *   summary : User / Security Login
  *     description: User Login
  *     tags:
- *     - Authentication
+ *     - Login
  *     requestBody:
  *       required: true
  *       content:
@@ -129,9 +131,10 @@ app.post('/login/user', async (req, res) => {
  * @swagger
  * /login/visitor:
  *   post:
+ *     summary : Login Visitor Account
  *     description: Visitor Login
  *     tags:
- *     - Authentication
+ *     - Login
  *     requestBody:
  *       required: true
  *       content:
@@ -174,9 +177,13 @@ app.post('/login/visitor', async (req, res) => {
  * @swagger
  * /register/user:
  *   post:
- *     description: User Registration
+ *     summary : Create a User 
+ *     security:
+ *      - jwt: []
+ *     description: 
+ *      - User Registration
  *     tags:
- *     - Registration
+ *     - User
  *     requestBody:
  *       required: true
  *       content:
@@ -216,9 +223,12 @@ app.post('/register/user', async (req, res) => {
  * @swagger
  * /register/visitor:
  *   post:
+ *     summary : Create a Visitor
+ *     security:
+ *      - jwt: []
  *     description: Visitor Registration
  *     tags:
- *     - Registration
+ *     - Visitor
  *     requestBody:
  *       required: true
  *       content:
@@ -248,12 +258,15 @@ app.post('/register/user', async (req, res) => {
  */
 
 app.post('/register/visitor', async (req, res) => {
-	console.log(req.body);
-
+	//console.log(req.body);
+	if (req.user.rank == "officer" || "security"){
 		const reg = await Visitor.register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender, req.body.relation, req.body.telno);
 		console.log(reg);
-	
-	res.json({reg})
+	}
+	//res.json({reg})
+	else
+	{res.status(403).send("You are unauthorized")
+	}
 })
 
 app.use(verifyToken);
@@ -262,11 +275,12 @@ app.use(verifyToken);
  * @swagger
  * /register/Visitorlog:
  *   post:
+ *     summary : Create Visitor Pass for Visitor
  *     security:
  *      - jwt: []
  *     description: Create Visitorlog
  *     tags:
- *     - Registration
+ *     - Visitor Pass
  *     requestBody:
  *       required: true
  *       content:
@@ -306,8 +320,9 @@ app.use(verifyToken);
 		const reg = await Visitorlog.register(req.body.logno, req.body.username, req.body.inmateno, req.body.dateofvisit, req.body.timein, req.body.timeout, req.body.purpose, req.body.officerno);
 		res.status(200).send(reg)
 	}
-	else{
-		res.status(403).send("You are unauthorized")
+	else
+	{res.status(403).send("You are unauthorized")
+		
 	}
 })
 
@@ -315,11 +330,12 @@ app.use(verifyToken);
  * @swagger
  * /register/inmate:
  *   post:
+ *     summary : Create a Inmate
  *     security:
  *      - jwt: []
  *     description: Inmate Registration
  *     tags:
- *     - Registration 
+ *     - Inmate
  *     requestBody:
  *       required: true
  *       content:
@@ -364,11 +380,12 @@ app.use(verifyToken);
  * @swagger
  * /user/update:
  *   patch:
+ *     summary : Update User Details
  *     security:
  *      - jwt: []
  *     description: User Update
  *     tags:
- *     - Modification
+ *     - User
  *     requestBody:
  *       required: true
  *       content:
@@ -393,6 +410,50 @@ app.use(verifyToken);
  *         description: There is an error during updating , Please try again
  */
 
+//visitor view all security
+app.get('/view/visitor/visitorlog', async (req, res) => {
+	try {
+	  const result = await client
+		.db('Prison_VMS')
+		.collection('visitor')
+		.find()
+		.toArray();
+  
+	  res.send(result);
+	} catch (error) {
+	  console.error(error);
+	  res.status(403).send("Internal Server Error");
+	}
+  });
+
+
+/**
+ * @swagger
+ * /view/vistor/visitorlog:
+ *   get:
+ *     summary : Visitor View Visitor Pass
+ *     security:
+ *      - jwt: []
+ *     description: View Visitorlog
+ *     tags:
+ *     - Visitor Pass
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties:
+ *               visitorname: 
+ *                 type: string
+ *               
+ *     responses:
+ *       200:
+ *         description: Successful retrived visitor pass details
+ *       401:
+ *         description: There is an error during updating , Please try again
+ */
+
 app.patch('/user/update', async (req, res) => {
 	console.log(req.body);
 
@@ -410,11 +471,12 @@ app.patch('/user/update', async (req, res) => {
  * @swagger
  * /visitor/update:
  *   patch:
+ *     summary : Update Visitor Details
  *     security:
  *      - jwt: []
  *     description: Visitor Update
  *     tags:
- *     - Modification
+ *     - Visitor
  *     requestBody:
  *       required: true
  *       content:
@@ -459,11 +521,12 @@ app.patch('/visitor/update', async (req, res) => {
  * @swagger
  * /inmate/update:
  *   patch:
+ *     summary : Update Inmate Details
  *     security:
  *      - jwt: []
  *     description: Inmate Update
  *     tags:
- *     - Modification
+ *     - Inmate
  *     requestBody:
  *       required: true
  *       content:
@@ -505,11 +568,12 @@ app.patch('/visitor/update', async (req, res) => {
  * @swagger
  * /visitorlog/update:
  *   patch:
+ *     summary : Update Visitor Pass Details
  *     security:
  *      - jwt: []
  *     description: Visitorlog Update
  *     tags:
- *     - Modification
+ *     - Visitor Pass
  *     requestBody:
  *       required: true
  *       content:
@@ -555,11 +619,12 @@ app.patch('/visitor/update', async (req, res) => {
  * @swagger
  * /delete/user:
  *   delete:
+ *     summary : Delete User Account
  *     security:
  *      - jwt: []
  *     description: Delete User
  *     tags:
- *     - Remove(delete)
+ *     - User
  *     requestBody:
  *       required: true
  *       content:
@@ -591,11 +656,12 @@ app.delete('/delete/user', async (req, res) => {
  * @swagger
  * /delete/visitor:
  *   delete:
+ *     summary : Delete Visitor Account
  *     security:
  *      - jwt: []
  *     description: Delete Visitor
  *     tags:
- *     - Remove(delete)
+ *     - Visitor
  *     requestBody:
  *       required: true
  *       content:
@@ -627,11 +693,12 @@ app.delete('/delete/visitor', async (req, res) => {
  * @swagger
  * /delete/Inmate:
  *   delete:
+ *     summary : Delete Inmate Account
  *     security:
  *      - jwt: []
  *     description: Delete Inmate
  *     tags:
- *     - Remove(delete)
+ *     - Inmate
  *     requestBody:
  *       required: true
  *       content:
@@ -663,11 +730,12 @@ app.delete('/delete/visitor', async (req, res) => {
  * @swagger
  * /delete/visitorlog:
  *   delete:
+ *     summary : Delete Visitor Pass
  *     security:
  *      - jwt: []
  *     description: Delete Visitorlog
  *     tags:
- *     - Remove(delete)
+ *     - Visitor Pass
  *     requestBody:
  *       required: true
  *       content:

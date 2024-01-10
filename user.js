@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt")
-let users;
+let user;
 // /
 class User {
 	static async injectDB(conn) {
-		users = await conn.db("Prison_VMS").collection("users")
+		user = await conn.db("Prison_VMS").collection("users")
 	}
 
 	/**
@@ -57,7 +57,7 @@ class User {
 	}
 	
 		static async update(username, name, officerno, rank, phone){
-				users.updateOne({username:username},{$set:{
+				User.updateOne({username:username},{$set:{
 				"Name": name,
 				"OfficerNo": officerno,
 				"Rank": rank,
@@ -66,8 +66,8 @@ class User {
 		}
 
 		static async delete(username) {
-			users.deleteOne({username: username})
-			return { status: "User deleted!" }
+			User.deleteOne({username: username})
+			return { status: "Admin deleted!" }
 		}
 
 	}
