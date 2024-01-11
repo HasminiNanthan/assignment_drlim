@@ -263,7 +263,7 @@ app.post('/register/visitor', async (req, res) => {
 		const reg = await Visitor.register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender, req.body.relation, req.body.telno);
 		console.log(reg);
 	}
-	//res.json({reg})
+	// res.json({reg})
 	else
 	{res.status(403).send("You are unauthorized")
 	}

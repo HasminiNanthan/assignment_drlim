@@ -16,7 +16,7 @@ class User {
 	 */
 	static async register(username, password, name, officerno, rank, phone) {
 		// TODO: Check if username exists
-		const res = await users.findOne({ username: username })
+		const res = await user.findOne({ username: username })
 
 			if (res){
 				return { status: "duplicate username"}
@@ -27,7 +27,7 @@ class User {
 			const hash = await bcrypt.hash(password, salt)
 
 			// TODO: Save user to database
-			users.insertOne({
+			user.insertOne({
 							"username": username,
 							"Password": password,
 							"HashedPassword": hash,
@@ -40,7 +40,7 @@ class User {
 
 	static async login(username, password) {
 			// TODO: Check if username exists
-			const result = await users.findOne({username: username});
+			const result = await user.findOne({username: username});
 
 				if (!result) {
 					return { status: "invalid username" }
@@ -57,7 +57,7 @@ class User {
 	}
 	
 		static async update(username, name, officerno, rank, phone){
-				User.updateOne({username:username},{$set:{
+				user.updateOne({username:username},{$set:{
 				"Name": name,
 				"OfficerNo": officerno,
 				"Rank": rank,
@@ -66,7 +66,7 @@ class User {
 		}
 
 		static async delete(username) {
-			User.deleteOne({username: username})
+			user.deleteOne({username: username})
 			return { status: "Admin deleted!" }
 		}
 
