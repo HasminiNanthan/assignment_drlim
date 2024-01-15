@@ -258,15 +258,15 @@ app.post('/register/user', async (req, res) => {
  */
 
 app.post('/register/visitor', async (req, res) => {
-	//console.log(req.body);
-	if (req.user.rank == "officer" || "security"){
+	console.log(req.body);
+	// if (req.user.rank == "officer" || "security" ){
 		const reg = await Visitor.register(req.body.username, req.body.password, req.body.name, req.body.age, req.body.gender, req.body.relation, req.body.telno);
 		console.log(reg);
-	}
-	// res.json({reg})
-	else
-	{res.status(403).send("You are unauthorized")
-	}
+	
+	res.json({reg})
+	// else
+	// {res.status(403).send("You are unauthorized")
+	// }
 })
 
 app.use(verifyToken);
